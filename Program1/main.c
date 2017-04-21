@@ -4,7 +4,7 @@
 #include <sys/queue.h>
 #include <string.h>
 #include <unistd.h>
-
+#include "mt19937ar.c"
 
 
 
@@ -74,11 +74,11 @@ int random_num_gen( int range, int low, int high){
         }
     }
     else{
-        //use mt19937
+        //use mt1993
         if(range == 1){
-            x = low+ rand() % (high - low);
+            x = low+ (int)genrand_int32() % (high - low);
         }else{
-            x = 0+ rand() % (100000);
+            x = 0+ (int)genrand_int32() % (100000);
         }
     }
     
