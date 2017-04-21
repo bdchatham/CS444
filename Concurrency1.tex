@@ -1,0 +1,201 @@
+\documentclass[10pt,draftclsnofoot,onecolumn]{IEEEtran}
+\usepackage{pdfpages}
+\usepackage{lipsum}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{graphicx}
+\renewcommand{\maketitle}{\bgroup\setlength{\parindent}{0pt}
+\begin{flushleft}
+\Huge
+  \textbf{\@Homework 1 Write Up}
+\large
+\vspace{5mm}\\
+  Erin Sullens \\
+   \vspace{3mm}
+   Brandon Chatham\\
+   \vspace{3mm}
+  CS444 \\
+  \vspace{3mm}
+  Spring 2017
+
+  
+\end{flushleft}\egroup
+}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage[document]{ragged2e}
+\geometry{letterpaper, margin=0.75in}
+\newcommand\tab[1][1cm]{\hspace*{#1}}
+\title{}
+\author{ }
+
+\date{March 2017}
+\begin{document}{
+\singlespacing
+%\fontfamily{lmss}\selectfont
+%\begin{flushleft}
+\maketitle
+%\end{flushleft}
+\setlength{\parindent}{0cm}
+
+
+
+
+\newpage
+{\Large\textbf{Working with the Kernal}}\\
+  \vspace{5mm}
+\section{Commands Used}
+\subsection{Log of Commands Used}
+These are the instructions given to us by the TA, Zhicheng in order to set up our VM on the os-class server: 
+Open two terminal windows. In terminal \#1, do steps 2-12.
+In terminal \#2 do steps 2-3. In terminal \#1 we will build our
+project and use gdb to control the emulator in the debug
+mode. In terminal \#2, we will boot our kernels on the VM.
+2. Log on to os-class : pengc@os-
+class.oregonstate.edu(Please use your own user name )
+3. Call cd /scratch/spring2017/10-01 . If you don’t have this
+folder(10-01), call mkdir 10-01 to create under
+/scratch/spring2017/ directory and cd 10-01 to change the
+directory
+4. Call git clone git://git.yoctoproject.org/linux-yocto- 3.14 to
+download the project from GitHub and you will get linux-
+yocto-3.14.
+5. To switch to the correct tag, call cd linux-yocto- 3.14, and
+then git checkout v3.14.26 
+6. Before we build our kernel or run qemu, we should
+configure the environment, so run source
+/scratch/opt/environment-setup- i586-poky- linux.csh 
+7. Follow 8-12 steps, make a kernel instance for your group.
+8. Run cp /scratch/spring2017/files/config-3.14.26- yocto-qemu
+.config
+9. Run make menuconfig and you will get a window
+10. In the widow do the following: press / and type in
+LOCALVERSION, press enter. 
+11. Hit 1, press enter and then edit the value to be -10- 01-
+hw1 (-10- 01-hw1 for group 10-01). This will be appended to
+the kernel name
+12. Run make -j4 all, your kernel instance will be built with 4
+threads
+13. Run cd .. and then run gdb. Stop here for now.
+14. In terminal \#2, do step 6.
+15. To make a copy for the starting kernel and the drive file
+located in /scratch/spring2017/files/, do steps 16-17 under
+your group directory, ex. /scratch/spring2017/10-01 
+16. Call cp /scratch/spring2017/files/bzImage-qemux86.bin
+. (This . is an operand)
+17. Call  /scratch/spring2017/files/core-image- lsb-sdk-
+qemux86.ext3 . (This . is an operand)
+18. Try run the starting kernel : Call qemu-system- i386 -gdb
+tcp::5601 -S -nographic -kernel bzImage-qemux86.bin -
+drive file=core-image- lsb-sdk- qemux86.ext3,if=virtio -
+enable-kvm -net none -usb -localtime -- no-reboot -- append
+\&quot;root=/dev/vda rw console=ttyS0 debug\&quot; (Here I use 5601
+because I took an example of group 10-01, the port number
+should always be 5600+ some \#. In this case, it is 5600
++101.)
+19. Since in step 18, we run qemu in debug mode with the
+CPU halted. We need to use gdb to control it. Do steps 20-
+21.
+20. In terminal \#1, it is now in gdb. Run target remote :5601
+to connect the qemu.
+21. Run continue. Then you will see the change in terminal
+\#2. 
+22. If you succeed in running qemu, you will be asked to
+login. Type root and enter. Run uname -a and you will see
+that the kernel name.
+23. Use reboot to reboot the VM.
+24. Try run the kernel instance we created in steps 8-12.
+The kernel instance we built is located in linux-yocto-
+3.14/arch/x86/boot/ and it is named bzImage.
+25. Run qemu-system- i386 -gdb tcp::5601 -S -nographic -
+kernel linux-yocto- 3.14/arch/x86/boot/bzImage  -drive
+file=core-image- lsb-sdk- qemux86.ext3,if=virtio -enable- kvm
+-net none -usb -localtime -- no-reboot -- append
+\&quot;root=/dev/vda rw console=ttyS0 debug\&quot;
+26. Do steps 20-22 again. You should find the difference in
+kernel names. The name should be customized into
+something like ??-10- 01-hw1, because uname -a produce
+the LOCALVERSION string.
+27. reboot the vm and use q to quit gdb. You are done with
+the kernel portion of HW1.
+FYI, \$SRC\_ROOT in the assignment discription is just a notational
+shorthand. In my example, it is /scratch/spring2017/10-01/linux-
+yocto-3.14.
+
+After following these steps, we successfully ran our VM from the server. 
+\vspace{5mm}
+\section{Concurrency Write-Up}
+As for our concurrency assignment, our solution includes a struct we called item holding the random number and a variable that determined the sleep duration. The directions made it very clear we would have producers and consumers sharing some resource and often waiting on each other. Once we create the appropriate number of threads (number based on the number of consumers and producers specified) then we begin the production and trading off of resources. The producer creates 2 random numbers using our randomNumGen function. The first number is a random positive number, and the other is a random positive number we keep within the specified bounds for the later determining how long the consumer will sleep. Before that happens, the producer adds the item to the buffer using the addItem function. Then, the consumer removes the item, sleeps for the alloted duration, and prints out the aforementioned random number value given to the item. 
+
+\section{Kernel Flag Descriptions}
+	\subsection{gdb}
+	Allows the use of GDB debugging.
+	\subsection{tcp}
+	The connection protocol accompanied with our group-specific port info.
+	\subsection{nographic}
+	Disables the virtual monitor to the terminal.
+	\subsection{if=virtio}
+	Checks if virtio is being used or available for I/O virtualization.
+	\subsection{enable-kvm}
+	Enables virtio.
+	\subsection{enable-kvm}
+		
+		
+  \vspace{5mm}
+\section{Follow-Up Questions}
+\subsection{Assignment Purpose}
+The purpose of this assignment was to make sure we were familiar with working with threads and to brush-up on our assembly knowledge. This was a basic but clear display of the producer-consumer model that we were able to implement ourselves. Lastly, I thought it was especially important to learn to write asm code within a C program. I had never done that before.
+\subsection{Approach to the Problem}
+The code design is very modular and keeps the different actions of the program separate. It is a pretty simple program: 1 list of items, and multiple sources trying to act on those items. So, we first focused creating the appropriate number of threads, then adding our objects to a list and then removing them. Lastly, we needed to learn exactly how to use rdrand so we first used srand and eventually replaced it once we better understood rdrand. 
+\subsection{Testing}
+The obvious answer is running our program and adding print statements. This allowed us to know which threads were using what resources and when and if there was an overlap. Additionally, we paid close attention to our output numbers that the consumers printed after sleeping. 
+\subsection{What we Learned}
+We learned a lot about setting up the kernel and got a bit more familiar with working on the command line. We were not new to the command line, but it is clear we will be using it in greater depth in this course than we previously have. Also, I learned to write assembly code inside a C program which is a useful skill. Lastly, this was the first time I had booted up a virtual machine so that was another thing I had learned. 
+\vspace{5mm}
+
+
+
+{\Large\textbf{Log Tables}}\\
+\vspace{5mm}
+\subsubsection{Version Control (Link:https://github.com/bdchatham/CS444/commits/master)}
+\begin{center}
+	\begin{tabular}{ | l | c | r|}
+		\hline
+		Who & Date & Work\\
+		\hline
+		Brandon & Initial Commit and README.md. & April 11th\\
+		\hline
+		Brandon & Saving progress on rdrand and uploading mt file.* & April 20th\\
+		\hline
+		Brandon & Removing mt19937ar.c for general randomization. & April 20th\\
+		\hline
+		Brandon & Removed main from mt file. Added logic for random number generation... & April 20th\\
+		\hline
+		Erin & Tex file template. & April 21st\\
+		\hline
+	\end{tabular}
+\end{center}
+\subsubsection{Work}
+\begin{center}
+	\begin{tabular}{ | l | c | r|}
+		\hline
+		Who & Date & Work\\
+		\hline
+		Erin & Kernel setup and launch. & April 17th\\
+		\hline
+		Erin & Implemented program except rdrand and mt. & April 19th\\
+		\hline
+		Brandon & Setup Github repo. & April 19th\\
+		\hline
+		Brandon & Implemented rdrand and mt changes. & April 20th\\
+		\hline
+		Erin & Fixed small bugs in program and reviewed rdrand and mt changes. & April 21st\\
+		\hline 
+		Brandon & Completed project report. & April 21st\\
+		\hline
+	\end{tabular}
+\end{center}
+
+\end{document}
+}
