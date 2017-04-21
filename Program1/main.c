@@ -42,13 +42,13 @@ struct item remove_item()
     return ret_item;
 }
 
-
-
 // generates a random number. when range is 1, it means that there is a range specified (e.g. when the consumer sleeps from 2 to 9 seconds)
 // low and high can just be zero when range is not 1
 int random_num_gen( int range, int low, int high){
     int x;
     srand(time(NULL));
+
+    unsigned int random;
     unsigned int eax;
     unsigned int ebx;
     unsigned int ecx;
@@ -65,11 +65,12 @@ int random_num_gen( int range, int low, int high){
                          );
     
     if(ecx & 0x40000000){
-        // use rdrand
+        // Make an asm call here to rdrand and store the value
+        asm("rdrand %0" : "=r" (random)); 
         if(range == 1){
-             x = low+ rand() % (high - low);
+             x = low+ random % (high - low);
         }else{
-            x = 0+ rand() % (100000);
+            x = 0+ random % (100000);
         }
     }
     else{
