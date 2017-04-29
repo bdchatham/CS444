@@ -20,47 +20,54 @@ void *supper(void * args)
 	struct philosopher* philo = (struct philosopher*)args;
 	int response = 0;
 	int action = 0;
-	int tries = 2;
+	int tries;
+	int justAte = 1;
 	//Infinitely cycle between eating and waiting.
 	while(1)
 	{
-		//Philosopher waits.
-		action = 1 + rand() % 20;
-		printf("%s is thinking for %d seconds.\n", philo->name, action);
-		sleep(action);
-		
+		if(justAte)
+		{
+			//Philosopher waits.
+			action = 1 + rand() % 20;
+			printf("%s is thinking for %d seconds.\n", philo->name, action);
+			sleep(action);
+			justAte = 0;
+		}
+		//Hang and wait for the left fork to be available.
+		response = pthread_mutex_lock(philo->leftFork);
+		tries = 2;
+	
 		while(1)
 		{
-			//Hang for the left fork.
-			response = pthread_mutex_lock(philo->leftFork);
-		
-			if(!response)//Checks if lock was successfully taken.
+			//Try to get the right fork a couple times.
+			if(tries > 0)
 			{
-				if(tries > 0)
-				{
-					response = pthread_mutex_trylock(philo->rightFork);
-					tries--;
-				}
-				else
-				{
-					response = pthread_mutex_lock(philo->rightFork);
-				}
-					
-				if(!response)
-				{
-					action = 2 + rand() % 8;
-					printf("%s has grabbed two forks and is eatting for %d seconds.\n", philo->name, action);
-					sleep(action);
-
-					//return the forks.
-					pthread_mutex_unlock(philo->leftFork);	
-					pthread_mutex_unlock(philo->rightFork);
-
-					printf("%s has returned the forks.\n", philo->name);
-					tries = 2;
-					break;
-				}
+				response = pthread_mutex_trylock(philo->rightFork);
+				tries--;
 			}
+			else
+			{
+				//Set the left fork down and see if someone else can use it to start eating. 
+				pthread_mutex_unlock(philo->leftFork);
+				//Break to go back and grab the left fork if no one else has taken it
+				break;
+			}
+			
+			//Will only enter this if it grabs the right fork successfully.		
+			if(!response)
+			{
+				action = 2 + rand() % 8;
+				printf("%s has grabbed two forks and is eatting for %d seconds.\n", philo->name, action);
+				sleep(action);
+				//return the forks.
+				pthread_mutex_unlock(philo->leftFork);	
+				pthread_mutex_unlock(philo->rightFork);
+
+				printf("%s has returned the forks.\n", philo->name);
+				tries = 2;
+				justAte = 1;
+				break;
+			}	
 		}	
 	}
 	
