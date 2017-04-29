@@ -25,6 +25,7 @@ void *supper(void * args)
 	//Infinitely cycle between eating and waiting.
 	while(1)
 	{
+		//This makes sure the philosopher only waits after they have successfully eats and not also when they fail to get both forks and put back the left fork.
 		if(justAte)
 		{
 			//Philosopher waits.
@@ -62,7 +63,7 @@ void *supper(void * args)
 				//return the forks.
 				pthread_mutex_unlock(philo->leftFork);	
 				pthread_mutex_unlock(philo->rightFork);
-
+					
 				printf("%s has returned the forks.\n", philo->name);
 				tries = 2;
 				justAte = 1;
