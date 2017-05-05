@@ -46,6 +46,8 @@ static int sstf_dispatch(struct request_queue *q, int force)
 
 		//There was only one item in the list.... dispatch.
 		if(sst == start) {
+			//Prints out the info of the one item on the list.
+			printk(KERN_INFO "[1]-%d-(%llu)", sData->direction, blk_rq_pos(sst));
 			//Deletes the node from the list.
 			list_del_init(&sst->queuelist);
 			//
@@ -59,6 +61,8 @@ static int sstf_dispatch(struct request_queue *q, int force)
 
 		//Foreach list head in our queue of requests...
 		list_for_each(listHead, sData->queue) {
+			//Print the info of the current data to determine if working properly.
+			printk(KERN_INFO "[1]-%d-(%llu)", sData->direction, blk_rq_pos(sst));
 			//Get the list head.
 			iterator = list_entry(listHead, struct request, queuelist);
 			//Get the sector of the iterator.
@@ -72,16 +76,21 @@ static int sstf_dispatch(struct request_queue *q, int force)
 					//Set sst to iterator value.
 					sst = iterator;
 					sstSector = iteratorSector;
+					printk(KERN_INFO "[+]-(%11u)-{%llu}", sData->direction, blk_rq_pos(sst));
 
 				//Check if we are going in the correct direction as done previously, but in the opposite direction.
 				} else if((sData->direction == 0) && (iteratorSector < sData->pos)) {
 					//Set sst to iterator value. 
 					sst = iterator;
 					sstSector = iteratorSector;
+					//Print the info for same purpose as before.
+					printk(KERN_INFO "[-]-(%11u)-{%llu}", nd->cur_direction, blk_rq_pos(sst));
 
 				//Reverse the direction.
 				} else {
-				sData->direction = !sData->direction;
+					sData->direction = !sData->direction;
+					//Alert when the direction switches.
+					printk(KERN_INFO "FLIP");
 				}
 			}
 		} 
