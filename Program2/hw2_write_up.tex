@@ -1,0 +1,116 @@
+\documentclass[10pt,draftclsnofoot,onecolumn]{IEEEtran}
+\usepackage{pdfpages}
+\usepackage{lipsum}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{graphicx}
+\renewcommand{\maketitle}{\bgroup\setlength{\parindent}{0pt}
+\begin{flushleft}
+\Huge
+  \textbf{\@Homework 2 Write Up}
+\large
+\vspace{5mm}\\
+  Erin Sullens \\
+   \vspace{3mm}
+   Brandon Chatham\\
+   \vspace{3mm}
+  CS444 \\
+  \vspace{3mm}
+  Spring 2017
+
+  
+\end{flushleft}\egroup
+}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage[document]{ragged2e}
+\geometry{letterpaper, margin=0.75in}
+\newcommand\tab[1][1cm]{\hspace*{#1}}
+\title{}
+\author{ }
+
+\date{March 2017}
+\begin{document}{
+\singlespacing
+%\fontfamily{lmss}\selectfont
+%\begin{flushleft}
+\maketitle
+%\end{flushleft}
+\setlength{\parindent}{0cm}
+
+
+
+
+\newpage
+{\Large\textbf{Working with the Kernal}}\\
+  \vspace{5mm}
+
+\subsection{Design of our SSTF algorithm}
+It first checks to see if the list is not empty. If it is, it gets the next I/O request from the queue. If there is only one item in the queue, it processes that one item. If there are multiple items, it checks to see what direction it is going in. If going forward, it sets the iterator to the previous item. If going backward, it sets the iterator to the next item. For each, if it has reached the last item in that direction, it switches directions.  
+\vspace{5mm}
+
+\section{Follow-Up Questions}
+\subsection{Main point of the assignment}
+The main purpose of this assignment was to get us to work with the VM and really understand how all the pieces work together. Another purpose was to have us better understand how schedulers work. 
+\subsection{Approach to the Problem}
+We approached the problem by first looking at the noop-iosched.c file. The only major changes we made were in the sstf\_dispatch function. Since we wanted to use the LOOK implementation, we knew we had to have the scheduler know where it is at all times, and to check which direction it is going in. 
+\subsection{Testing}
+We tested our sstf scheduler by creating a python script that generates input and output by writing to files and then reading from files. Also, in the sstf-iosched.c we added print statements that print out the sector numbers. 
+\subsection{What we Learned}
+We mainly learned a lot about the VM and how everything works together, like how the VM chooses what scheduler to use and how to run things on the VM. We also learned how schedulers get compiled, and how to make a new scheduler available to the VM.  
+\vspace{5mm}
+
+
+
+{\Large\textbf{Log Tables}}\\
+\vspace{5mm}
+\subsubsection{Version Control (Link:https://github.com/bdchatham/CS444/commits/master)}
+\begin{center}
+	\begin{tabular}{ | l | c | r|}
+		\hline
+		Who & Date & Work\\
+		\hline
+		Brandon & Concurrency 2 assignment finished. Beginning testing & April 27th \\
+		\hline
+		Brandon & Completed debugging. Need to fix edge-case deadlock and then Concurrency2 is complete & April 27th\\
+		\hline
+		Brandon & Finished Concurrency2.c. Adding comments. & April 29th \\
+		\hline
+		Brandon & Comments added to Concurrency2.c April 29th \\
+		\hline
+		Brandon & Added changes for sstf elevator scheduler & May 2nd \\
+		\hline
+		Brandon & Added kernel print statements for testing purposes & May 5th\\
+		\hline
+		Erin & Fixed problems with sstf & May 8th\\
+		\hline
+		Erin & Tex file & May 8th\\
+		\hline
+	\end{tabular}
+\end{center}
+\subsubsection{Work}
+\begin{center}
+	\begin{tabular}{ | l | c | r|}
+		\hline
+		Who & Date & Work\\
+		\hline
+		Brandon & Concurrency2 & April 27th\\
+		\hline
+		Brandon & Finished Concurrency2 & April 29th\\
+		\hline
+		Brandon & Worked on sstf scheduler & May 2nd\\
+		\hline
+		Brandon & Worked on sstf scheduler & May 5th\\
+		\hline
+		Erin & Worked on sstf scheduler & May 5st\\
+		\hline 
+		Erin & Worked on sstf scheduler & May 8th\\
+		\hline
+		Erin & Tex write-up & May 8th\\
+		\hline
+	\end{tabular}
+\end{center}
+
+\end{document}
+}
