@@ -1,0 +1,103 @@
+\documentclass[10pt,draftclsnofoot,onecolumn]{IEEEtran}
+\usepackage{pdfpages}
+\usepackage{lipsum}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{graphicx}
+\renewcommand{\maketitle}{\bgroup\setlength{\parindent}{0pt}
+\begin{flushleft}
+\Huge
+  \textbf{\@Homework 3 Write Up}
+\large
+\vspace{5mm}\\
+  Erin Sullens \\
+   \vspace{3mm}
+   Brandon Chatham\\
+   \vspace{3mm}
+  CS444 \\
+  \vspace{3mm}
+  Spring 2017
+
+  
+\end{flushleft}\egroup
+}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage[document]{ragged2e}
+\geometry{letterpaper, margin=0.75in}
+\newcommand\tab[1][1cm]{\hspace*{#1}}
+\title{}
+\author{ }
+
+\date{May 2017}
+\begin{document}{
+\singlespacing
+%\fontfamily{lmss}\selectfont
+%\begin{flushleft}
+\maketitle
+%\end{flushleft}
+\setlength{\parindent}{0cm}
+
+
+
+
+\newpage
+{\Large\textbf{Working with the Kernal}}\\
+  \vspace{5mm}
+
+\subsection{Design of our SSTF algorithm}
+We used started with the basic outline of a block driver from this website: http://blog.superpat.com/2010/05/04/a-simple-block-driver-for-linux-kernel-2-6-31/. From there, we added the encryption in the sbd_tranfer function. We used aes cipher for the encryption.  
+\vspace{5mm}
+
+\section{Follow-Up Questions}
+\subsection{Main point of the assignment}
+The main point of this assignment was for us to learn how to take a poorly documented API and using the resources available, get an outdated piece of code to work. 
+\subsection{Approach to the Problem}
+We approached the problem by using this book https://lwn.net/Kernel/LDD3/ as a big source. It told us how to load modules into the vm and how to modify the makefile and Kconfig files. 
+\subsection{Testing}
+We tested by using a lot of printk statements that printed out the encrypted and decrypted I/O. 
+\subsection{What we Learned}
+We learned that having poorly documented APIs are hard to work with and that it takes a lot of research to get them to work correctly.   
+\vspace{5mm}
+
+
+
+{\Large\textbf{Log Tables}}\\
+\vspace{5mm}
+\subsubsection{Version Control (Link:https://github.com/bdchatham/CS444/commits/master)}
+\begin{center}
+	\begin{tabular}{ | l | c | r|}
+		\hline
+		Who & Date & Work\\
+		\hline
+		Erin & sbd.c w/out printk statements to test correctness & May 22th \\
+		\hline
+		Erin & final code & May 22th\\
+		\hline
+		Erin & Added writeup.tex & May 22nd \\
+		\hline
+	\end{tabular}
+\end{center}
+\subsubsection{Work}
+\begin{center}
+	\begin{tabular}{ | l | c | r|}
+		\hline
+		Who & Date & Work\\
+		\hline
+		Brandon & Worked on understanding modules and block drivers & May 16th \\
+		\hline
+		Brandon & Worked on sbd.c & May 18th\\
+		\hline
+		Brandon & Worked on testing the block driver & May 22nd \\
+		\hline
+		Erin & Worked on testing block driver & May 22nd \\
+		\hline
+		Erin & write up & May 22nd \\
+		
+		\hline
+	\end{tabular}
+\end{center}
+
+\end{document}
+}
